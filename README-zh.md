@@ -1,28 +1,28 @@
 # mongo_dao_generator
 
-##### [中文文档](README-zh.md)
+[English Document](README.md)
 
-### 1.Introduction
+### 1.介绍
 
-mongo_dao_generator is a tool for automatically generating MongoDB Data Access Object.
+mongo_dao_generator是一个自动化生成MongoDB数据访问对象（Data Access Object）的工具。
 
-### 2.Advantage
+### 2.优势
 
-* Supports automatic filling of primitive.ObjectID and primitive.DateTime types.
+* 支持primitive.ObjectID、primitive.DateTime类型的自动填充。
 
-* Supports automatic increment of int, int8, int16, int32, int64, uint, uint8, uint16, uint32 and uint64 types.
+* 支持int、int8、int16、int32、int64、uint、uint8、uint16、uint32、uint64类型的自增长。
 
-* Provides a unified generation scheme for database fields, avoiding the problem of database fields that can be seen everywhere in business codes.
+* 提供了对数据库字段的统一生成方案，避免了业务代码中随处可见的数据库字段的问题。
 
-* Provides various database operation interfaces including InsertOne, InsertMany, UpdateOne, UpdateOneByID, UpdateMany, FindOne, FindOneByID, FindMany, DeleteOne, DeleteOneByID, DeleteMany, Count, Aggregate, etc.
+* 提供了包括InsertOne、InsertMany、UpdateOne、UpdateOneByID、UpdateMany、FindOne、FindOneByID、FindMany、DeleteOne、DeleteOneByID、DeleteMany、Count、Aggregate等多种数据库操作接口。
 
-* Provides the ability to expand the database operation interface.
+* 提供了对数据库操作接口的扩展能力。
 
-* Provides two package solutions: subcontracting and non-subcontracting.
+* 提供了分包与不分包两种包解决方案。
 
-* Supports customization of directory and file name styles.
+* 支持目录和文件名风格的自定义。
 
-### 3.Download and install
+### 3.安装
 
 ```bash
 go env -w GOSUMDB=off
@@ -30,7 +30,7 @@ go install github.com/dawnsgo/mongo_dao_generator@latest
 go env -w GOSUMDB=on
 ```
 
-### 4.Usage
+### 4.用法
 
 ```bash
 Usage of mongo_dao_generator:
@@ -60,18 +60,18 @@ Flags:
         specify the generation style for subpkg; options: kebab | underscore | lower | camel | pascal; default is kebab (default "kebab")
 ```
 
-### 5.Extension tags
+### 5.标签
 
-The parsing of gen tags is supported in the model definition, and the following tag parsing is currently supported:
+在模型定义中支持对gen标签的解析，目前支持以下标签解析：
 
-| Tag Name |                                                            | Example            | Description                                                                                         |
-| -------- | ---------------------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------- |
-| autoFill | primitive.ObjectID、primitive.DateTime                      | gen:"autoFill"     |                                                                                                     |
-| autoIncr | int、int8、int16、int32、int64、uint、uint8、uint16、uint32、uint64 | gen:"autoIncr:uid" | The increment is atomic and the counter code is generated synchronously when the code is generated. |
+| 标签名称     |                                                            | 示例                 | 说明                         |
+| -------- | ---------------------------------------------------------- | ------------------ | -------------------------- |
+| autoFill | primitive.ObjectID、primitive.DateTime                      | gen:"autoFill"     |                            |
+| autoIncr | int、int8、int16、int32、int64、uint、uint8、uint16、uint32、uint64 | gen:"autoIncr:uid" | 该自增为原子操作，会在生成代码时同步生成计数器代码。 |
 
-### 6.Example
+### 6.示例
 
-###### 6-1.Create model
+###### 6-1.创建模型
 
 model/mail.go
 
@@ -82,23 +82,23 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 //go:generate mongo_dao_generator -model-dir=. -model-names=Mail -dao-dir=../dao/
 type Mail struct {
-    ID       primitive.ObjectID `bson:"_id" gen:"autoFill"`       // mail id
-    Title    string             `bson:"title"`                    // mail title
-    Content  string             `bson:"content"`                  // mail content
-    Sender   int64              `bson:"sender"`                   // sender's uid
-    Receiver int64              `bson:"receiver"`                 // receiver's uid
-    Status   int                `bson:"status"`                   // mail status
-    SendTime primitive.DateTime `bson:"send_time" gen:"autoFill"` // send time
+    ID       primitive.ObjectID `bson:"_id" gen:"autoFill"`       // 邮件ID
+    Title    string             `bson:"title"`                    // 邮件标题
+    Content  string             `bson:"content"`                  // 邮件内容
+    Sender   int64              `bson:"sender"`                   // 邮件发送者
+    Receiver int64              `bson:"receiver"`                 // 邮件接受者
+    Status   int                `bson:"status"`                   // 邮件状态
+    SendTime primitive.DateTime `bson:"send_time" gen:"autoFill"` // 发送时间
 }
 ```
 
-###### 6-2.Generate dao files
+###### 6-2.生成dao文件
 
 ```bash
 go generate ./...
 ```
 
-###### 6-3.Generated dao file example
+###### 6-3.生成的dao文件示例
 
 dao/internal/mail.go
 
@@ -141,23 +141,23 @@ type Mail struct {
 }
 
 type MailColumns struct {
-    ID       string
-    Title    string
-    Content  string
-    Sender   string
-    Receiver string
-    Status   string
-    SendTime string
+    ID       string // 邮件ID
+    Title    string // 邮件标题
+    Content  string // 邮件内容
+    Sender   string // 邮件发送者
+    Receiver string // 邮件接受者
+    Status   string // 邮件状态
+    SendTime string // 发送时间
 }
 
 var mailColumns = &MailColumns{
-    ID:       "_id",
-    Title:    "title",
-    Content:  "content",
-    Sender:   "sender",
-    Receiver: "receiver",
-    Status:   "status",
-    SendTime: "send_time",
+    ID:       "_id",       // 邮件ID
+    Title:    "title",     // 邮件标题
+    Content:  "content",   // 邮件内容
+    Sender:   "sender",    // 邮件发送者
+    Receiver: "receiver",  // 邮件接受者
+    Status:   "status",    // 邮件状态
+    SendTime: "send_time", // 发送时间
 }
 
 func NewMail(db *mongo.Database) *Mail {
@@ -344,8 +344,8 @@ func (dao *Mail) FindMany(ctx context.Context, filterFunc MailFilterFunc, option
 // DeleteOne executes a delete command to delete at most one document from the collection.
 func (dao *Mail) DeleteOne(ctx context.Context, filterFunc MailFilterFunc, optionsFunc ...MailDeleteOptionsFunc) (*mongo.DeleteResult, error) {
     var (
-    opts   *options.DeleteOptions
-    filter = filterFunc(dao.Columns)
+        opts   *options.DeleteOptions
+        filter = filterFunc(dao.Columns)
     )
 
     if len(optionsFunc) > 0 {
@@ -370,8 +370,8 @@ func (dao *Mail) DeleteOneByID(ctx context.Context, id string, optionsFunc ...Ma
 // DeleteMany executes a delete command to delete documents from the collection.
 func (dao *Mail) DeleteMany(ctx context.Context, filterFunc MailFilterFunc, optionsFunc ...MailDeleteOptionsFunc) (*mongo.DeleteResult, error) {
     var (
-    opts   *options.DeleteOptions
-    filter = filterFunc(dao.Columns)
+        opts   *options.DeleteOptions
+        filter = filterFunc(dao.Columns)
     )
 
     if len(optionsFunc) > 0 {
@@ -416,7 +416,7 @@ func NewMail(db *mongo.Database) *Mail {
 }
 ```
 
-###### 6-4.Use the generated dao file
+###### 6-4.使用生成的dao文件
 
 ```go
 package main
@@ -435,9 +435,9 @@ import (
 
 func main() {
     var (
-    uri     = "mongodb://root:12345678@127.0.0.1:27017"
-    opts    = options.Client().ApplyURI(uri)
-    baseCtx = context.Background()
+        uri     = "mongodb://root:12345678@127.0.0.1:27017"
+        opts    = options.Client().ApplyURI(uri)
+        baseCtx = context.Background()
     )
 
     ctx, cancel := context.WithTimeout(baseCtx, 5*time.Second)
@@ -481,7 +481,7 @@ func main() {
 }
 ```
 
-execute result
+运行结果:
 
 ```bash
 2023/02/17 16:05:31 &{ID:ObjectID("63ef354a4ddc485f0d9c5ea3") Title:mongo_dao_generator introduction Content:the mongo_dao_generator is a tool for automatically generating MongoDB Data Access Object. Sender:1 Receiver:2 Status:1 SendTime:1676621130323}
